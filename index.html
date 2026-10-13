@@ -6,33 +6,41 @@
 <title>InstaClone</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <style>
-body{margin:0;font-family:-apple-system,Roboto,sans-serif;background:#fafafa;color:#262626;padding-bottom:60px}
-.top{background:#fff;border-bottom:1px solid #dbdbdb;text-align:center;font-family:'Brush Script MT',cursive;font-size:30px;padding:8px}
+body{margin:0;font-family:-apple-system,Roboto,sans-serif;background:#fff;color:#262626;padding-bottom:64px}
+.top{position:relative;background:#fff;border-bottom:1px solid #dbdbdb;text-align:center;font-family:'Brush Script MT',cursive;font-size:30px;padding:8px}
+.tl{position:absolute;left:14px;top:12px;cursor:pointer;display:flex}
 .box{max-width:400px;margin:20px auto;background:#fff;border:1px solid #dbdbdb;padding:20px;text-align:center}
 h1{font-family:'Brush Script MT',cursive;font-weight:400;font-size:42px;margin:0 0 20px}
 input,textarea{width:100%;box-sizing:border-box;padding:10px;margin:4px 0;border:1px solid #dbdbdb;background:#fafafa;border-radius:4px;font-size:14px}
 button{width:100%;padding:10px;margin-top:10px;background:#0095f6;color:#fff;border:0;border-radius:8px;font-weight:600;font-size:14px}
 button:disabled{opacity:.5}
+.gray{background:#efefef!important;color:#262626!important}
 a{color:#0095f6;cursor:pointer;font-size:14px}
 .avatar{width:80px;height:80px;border-radius:50%;background:#c7c7c7;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff}
 #msg{color:#ed4956;font-size:13px;margin-top:10px}
 .c{text-align:center;padding:30px 15px;color:#777}
-.post{max-width:470px;margin:12px auto;background:#fff;border:1px solid #dbdbdb}
-.ph{padding:10px}
+.post{max-width:470px;margin:0 auto 8px;background:#fff;border-bottom:1px solid #efefef}
+.ph{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.av2{width:36px;height:36px;border-radius:50%;background:#c7c7c7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.un{cursor:pointer}
+.fbtn{width:auto;margin:0 0 0 auto;padding:6px 16px;background:#efefef;color:#262626}
 .post img{width:100%;display:block}
-.act{padding:8px 10px 0;font-size:14px}
-.lk{font-size:26px;cursor:pointer;vertical-align:middle;margin-right:4px}
-.cap{padding:6px 10px;font-size:14px}
-.cms{padding:0 10px;font-size:14px}
+.act{display:flex;gap:14px;padding:10px 12px 4px}
+.act span{cursor:pointer;display:flex}
+.lc,.cap,.cms{padding:2px 12px;font-size:14px}
 .cm{margin:2px 0}
-.cmf{display:flex;gap:6px;padding:8px 10px}
+.cmf{display:flex;gap:6px;padding:8px 12px}
 .cmf input{margin:0;flex:1}
 .cmf button{width:auto;margin:0;padding:8px 14px}
-.dt{padding:0 10px 10px;font-size:11px;color:#888}
+.dt{padding:0 12px 10px;font-size:11px;color:#888}
+.stats{display:flex;justify-content:space-around;margin:12px 0;font-size:14px;line-height:1.3}
+.bio{font-size:14px;margin:6px 0}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dbdbdb;padding:10px;margin:8px 0;cursor:pointer;text-align:left}
+.sm{font-size:12px;color:#777}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:470px;margin:0 auto}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover}
 .nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #dbdbdb}
-.nav button{width:auto;flex:1;background:none;color:#262626;font-size:24px;margin:0;border-radius:0;padding:12px}
+.nav button{width:auto;flex:1;background:none;color:#262626;margin:0;border-radius:0;padding:12px;display:flex;justify-content:center}
 </style>
 </head>
 <body>
@@ -45,7 +53,20 @@ const app=document.getElementById('app');
 const $=id=>document.getElementById(id);
 const v=id=>$(id).value.trim();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let mode='login',user=null,tab='home',myName='',feed=[];
+let mode='login',user=null,tab='home',prevTab='home',viewId=null,myName='',feed=[],myFollowing=new Set();
+
+const sv=(inner,fill='none',stroke='currentColor',s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="${fill}" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+const I={
+ heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+ cmt:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+ home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+ search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',
+ plus:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>',
+ user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+};
+const ago=t=>{const s=(Date.now()-new Date(t))/1000;
+  if(s<60)return 'abhi';if(s<3600)return Math.floor(s/60)+' min pehle';
+  if(s<86400)return Math.floor(s/3600)+' ghante pehle';return Math.floor(s/86400)+' din pehle';};
 
 function authView(){
   const su=mode==='signup';
@@ -74,32 +95,76 @@ function authView(){
 }
 
 function shell(){
-  app.innerHTML=`<div class="top">InstaClone</div><div id="main"></div>
-  <div class="nav"><button data-t="home">🏠</button><button data-t="new">➕</button><button data-t="me">👤</button></div>`;
+  app.innerHTML=`<div class="top"><span class="tl" id="plus">${sv(I.plus)}</span>InstaClone</div><div id="main"></div>
+  <div class="nav">
+  <button data-t="home">${sv(I.home)}</button>
+  <button data-t="search">${sv(I.search)}</button>
+  <button data-t="new">${sv(I.plus)}</button>
+  <button data-t="me">${sv(I.user)}</button></div>`;
   document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;show();});
+  $('plus').onclick=()=>{tab='new';show();};
+  $('main').onclick=onMain;
 }
 function show(){
-  if(tab==='home')homeView();else if(tab==='new')newView();else profileView();
+  if(tab==='home')homeView();
+  else if(tab==='search')searchView();
+  else if(tab==='new')newView();
+  else if(tab==='user')profileView(viewId);
+  else profileView(user.id);
+}
+function openUser(id){
+  if(id===user.id){tab='me';}
+  else{if(tab!=='user')prevTab=tab;viewId=id;tab='user';}
+  show();
+}
+
+async function onMain(e){
+  const t=e.target;
+  const fl=t.closest('[data-follow]');
+  if(fl){await toggleFollow(fl.dataset.follow);return;}
+  const lk=t.closest('[data-like]');
+  if(lk){await toggleLike(+lk.dataset.like);return;}
+  const cm=t.closest('[data-cm]');
+  if(cm){await addComment(+cm.dataset.cm);return;}
+  const fc=t.closest('[data-focus]');
+  if(fc){const i=$('ci'+fc.dataset.focus);if(i)i.focus();return;}
+  if(t.closest('[data-back]')){tab=prevTab;show();return;}
+  const us=t.closest('[data-user]');
+  if(us){openUser(us.dataset.user);}
+}
+
+async function loadMe(){
+  const {data:me}=await db.from('profiles').select('username').eq('id',user.id).single();
+  myName=me?.username||'me';
+  const {data:f}=await db.from('follows').select('following_id').eq('follower_id',user.id);
+  myFollowing=new Set((f||[]).map(x=>x.following_id));
 }
 
 function postHTML(p){
   const liked=p.likes.some(l=>l.user_id===user.id);
+  const un=p.profiles?.username;
+  const showF=p.user_id!==user.id&&!myFollowing.has(p.user_id);
   return `<div class="post" id="p${p.id}">
-    <div class="ph"><b>@${esc(p.profiles?.username)}</b></div>
+    <div class="ph"><div class="av2 un" data-user="${esc(p.user_id)}">${esc((un||'?')[0].toUpperCase())}</div>
+    <b class="un" data-user="${esc(p.user_id)}">${esc(un)}</b>
+    ${showF?`<button class="fbtn" data-follow="${esc(p.user_id)}">Follow</button>`:''}</div>
     <img src="${esc(p.image_url)}" loading="lazy">
-    <div class="act"><span class="lk" data-like="${p.id}">${liked?'❤️':'🤍'}</span><b>${p.likes.length}</b> likes</div>
-    <div class="cap"><b>${esc(p.profiles?.username)}</b> ${esc(p.caption)}</div>
-    <div class="cms">${p.comments.map(c=>`<div class="cm"><b>${esc(c.profiles?.username)}</b> ${esc(c.body)}</div>`).join('')}</div>
+    <div class="act"><span data-like="${p.id}">${sv(I.heart,liked?'#ed4956':'none',liked?'#ed4956':'currentColor')}</span><span data-focus="${p.id}">${sv(I.cmt)}</span></div>
+    <div class="lc"><b>${p.likes.length} likes</b></div>
+    <div class="cap"><b class="un" data-user="${esc(p.user_id)}">${esc(un)}</b> ${esc(p.caption)}</div>
+    <div class="cms">${p.comments.map(c=>`<div class="cm"><b class="un" data-user="${esc(c.user_id)}">${esc(c.profiles?.username)}</b> ${esc(c.body)}</div>`).join('')}</div>
     <div class="cmf"><input id="ci${p.id}" placeholder="Comment likho..." maxlength="300"><button data-cm="${p.id}">Post</button></div>
-    <div class="dt">${new Date(p.created_at).toLocaleDateString()}</div></div>`;
+    <div class="dt">${ago(p.created_at)}</div></div>`;
 }
 
 function redraw(p){
   const el=$('p'+p.id);
   if(!el)return;
-  const old=$('ci'+p.id)?$('ci'+p.id).value:'';
+  const ci=$('ci'+p.id);
+  const old=ci?ci.value:'';
   el.outerHTML=postHTML(p);
-  if(old&&$('ci'+p.id))$('ci'+p.id).value=old;
+  const n=$('ci'+p.id);
+  if(old&&n)n.value=old;
 }
 
 async function toggleLike(id){
@@ -135,27 +200,47 @@ async function addComment(id){
   redraw(p);
 }
 
+async function toggleFollow(id){
+  const had=myFollowing.has(id);
+  const r=had
+    ?await db.from('follows').delete().eq('follower_id',user.id).eq('following_id',id)
+    :await db.from('follows').insert({follower_id:user.id,following_id:id});
+  if(r.error){alert(r.error.message);return;}
+  if(had)myFollowing.delete(id);else myFollowing.add(id);
+  if(tab==='user')profileView(id);
+  else feed.filter(p=>p.user_id===id).forEach(redraw);
+}
+
 async function homeView(){
   const m=$('main');
   m.innerHTML='<p class="c">Loading...</p>';
-  if(!myName){
-    const {data:me}=await db.from('profiles').select('username').eq('id',user.id).single();
-    myName=me?.username||'me';
-  }
   const {data,error}=await db.from('posts')
-    .select('id,image_url,caption,created_at,profiles!posts_user_id_fkey(username),likes(user_id),comments(id,body,created_at,user_id,profiles!comments_user_id_fkey(username))')
+    .select('id,user_id,image_url,caption,created_at,profiles!posts_user_id_fkey(username),likes(user_id),comments(id,body,created_at,user_id,profiles!comments_user_id_fkey(username))')
     .order('created_at',{ascending:false}).limit(30);
   if(error){m.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
   feed=data;
   feed.forEach(p=>p.comments.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
   if(!feed.length){m.innerHTML='<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>';return;}
   m.innerHTML=feed.map(postHTML).join('');
-  m.onclick=async e=>{
-    const lk=e.target.closest('[data-like]');
-    if(lk){await toggleLike(+lk.dataset.like);return;}
-    const cm=e.target.closest('[data-cm]');
-    if(cm){await addComment(+cm.dataset.cm);}
-  };
+}
+
+function searchView(){
+  $('main').innerHTML=`<div style="padding:10px"><input id="q" placeholder="Username search karo..."></div><div id="res" style="padding:0 10px"></div>`;
+  let t;
+  $('q').oninput=()=>{clearTimeout(t);t=setTimeout(runSearch,300);};
+  runSearch();
+}
+async function runSearch(){
+  if(!$('q'))return;
+  const q=$('q').value.trim().replace(/[%_,()]/g,'');
+  let qb=db.from('profiles').select('id,username,full_name').limit(20);
+  qb=q?qb.ilike('username','%'+q+'%'):qb.order('created_at',{ascending:false});
+  const {data,error}=await qb;
+  const res=$('res');
+  if(!res)return;
+  if(error){res.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
+  if(!data.length){res.innerHTML='<p class="c">Koi nahi mila</p>';return;}
+  res.innerHTML=data.map(u=>`<div class="row" data-user="${esc(u.id)}"><div class="av2">${esc((u.username||'?')[0].toUpperCase())}</div><div><b>${esc(u.username)}</b><div class="sm">${esc(u.full_name)}</div></div></div>`).join('');
 }
 
 function compress(file){
@@ -204,33 +289,44 @@ function newView(){
   };
 }
 
-async function profileView(){
+async function profileView(id){
+  const own=id===user.id;
   const m=$('main');
-  const {data:p}=await db.from('profiles').select('*').eq('id',user.id).single();
-  const {data:posts}=await db.from('posts').select('id,image_url')
-    .eq('user_id',user.id).order('created_at',{ascending:false});
-  m.innerHTML=`<div class="box">
-  <div class="avatar">${esc((p?.username||'?')[0].toUpperCase())}</div>
-  <h3>@${esc(p?.username)}</h3><p>${esc(p?.full_name)}</p>
-  <p><b>${posts?.length||0}</b> posts</p>
-  <textarea id="bio" rows="3" placeholder="Bio">${esc(p?.bio)}</textarea>
-  <button id="save">Save bio</button>
-  <button id="out" style="background:#efefef;color:#262626">Log out</button>
+  m.innerHTML='<p class="c">Loading...</p>';
+  const [pr,po,fr,fg]=await Promise.all([
+    db.from('profiles').select('*').eq('id',id).single(),
+    db.from('posts').select('id,image_url').eq('user_id',id).order('created_at',{ascending:false}),
+    db.from('follows').select('*',{count:'exact',head:true}).eq('following_id',id),
+    db.from('follows').select('*',{count:'exact',head:true}).eq('follower_id',id)
+  ]);
+  const p=pr.data;
+  if(!p){m.innerHTML='<p class="c">Profile nahi mila</p>';return;}
+  const isF=myFollowing.has(id);
+  m.innerHTML=`${own?'':'<div style="padding:10px"><a data-back="1">← Back</a></div>'}
+  <div class="box"><div class="avatar">${esc((p.username||'?')[0].toUpperCase())}</div>
+  <h3>@${esc(p.username)}</h3><p>${esc(p.full_name)}</p>
+  <div class="stats"><div><b>${po.data?.length||0}</b><br>posts</div><div><b>${fr.count||0}</b><br>followers</div><div><b>${fg.count||0}</b><br>following</div></div>
+  ${own
+   ?`<textarea id="bio" rows="3" placeholder="Bio">${esc(p.bio)}</textarea><button id="save">Save bio</button><button id="out" class="gray">Log out</button>`
+   :`<p class="bio">${esc(p.bio)}</p><button data-follow="${esc(id)}" class="${isF?'gray':''}">${isF?'Following':'Follow'}</button>`}
   <div id="msg"></div></div>
-  <div class="grid">${(posts||[]).map(x=>`<img src="${esc(x.image_url)}">`).join('')}</div>`;
-  $('save').onclick=async()=>{
-    const {error}=await db.from('profiles').update({bio:v('bio')}).eq('id',user.id);
-    $('msg').style.color=error?'#ed4956':'#2e7d32';
-    $('msg').textContent=error?error.message:'Saved!';
-  };
-  $('out').onclick=()=>{myName='';db.auth.signOut();};
+  <div class="grid">${(po.data||[]).map(x=>`<img src="${esc(x.image_url)}">`).join('')}</div>`;
+  if(own){
+    $('save').onclick=async()=>{
+      const {error}=await db.from('profiles').update({bio:v('bio')}).eq('id',user.id);
+      $('msg').style.color=error?'#ed4956':'#2e7d32';
+      $('msg').textContent=error?error.message:'Saved!';
+    };
+    $('out').onclick=()=>{myName='';myFollowing=new Set();db.auth.signOut();};
+  }
 }
 
 db.auth.onAuthStateChange((ev,session)=>{
   if(ev==='TOKEN_REFRESHED')return;
-  setTimeout(()=>{
+  if(ev==='SIGNED_IN'&&user&&session&&session.user.id===user.id)return;
+  setTimeout(async()=>{
     user=session?session.user:null;
-    if(user){shell();show();}else authView();
+    if(user){await loadMe();tab='home';shell();show();}else authView();
   },0);
 });
 </script>
