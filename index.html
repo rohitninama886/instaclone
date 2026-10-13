@@ -78,7 +78,7 @@ async function homeView(){
   const m=$('main');
   m.innerHTML='<p class="c">Loading...</p>';
   const {data,error}=await db.from('posts')
-    .select('id,image_url,caption,created_at,profiles(username)')
+.select('id,image_url,caption,created_at,profiles!posts_user_id_fkey(username)')
     .order('created_at',{ascending:false}).limit(30);
   if(error){m.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
   if(!data.length){m.innerHTML='<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>';return;}
