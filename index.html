@@ -20,7 +20,14 @@ a{color:#0095f6;cursor:pointer;font-size:14px}
 .post{max-width:470px;margin:12px auto;background:#fff;border:1px solid #dbdbdb}
 .ph{padding:10px}
 .post img{width:100%;display:block}
-.cap{padding:8px 10px;font-size:14px}
+.act{padding:8px 10px 0;font-size:14px}
+.lk{font-size:26px;cursor:pointer;vertical-align:middle;margin-right:4px}
+.cap{padding:6px 10px;font-size:14px}
+.cms{padding:0 10px;font-size:14px}
+.cm{margin:2px 0}
+.cmf{display:flex;gap:6px;padding:8px 10px}
+.cmf input{margin:0;flex:1}
+.cmf button{width:auto;margin:0;padding:8px 14px}
 .dt{padding:0 10px 10px;font-size:11px;color:#888}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:470px;margin:0 auto}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover}
@@ -38,7 +45,8 @@ const app=document.getElementById('app');
 const $=id=>document.getElementById(id);
 const v=id=>$(id).value.trim();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let mode='login',user=null,tab='home';
+let mode='login',user=null,tab='home',myName='',feed=[];
+
 function authView(){
   const su=mode==='signup';
   app.innerHTML=`<div class="box"><h1>InstaClone</h1>
@@ -74,19 +82,80 @@ function show(){
   if(tab==='home')homeView();else if(tab==='new')newView();else profileView();
 }
 
+function postHTML(p){
+  const liked=p.likes.some(l=>l.user_id===user.id);
+  return `<div class="post" id="p${p.id}">
+    <div class="ph"><b>@${esc(p.profiles?.username)}</b></div>
+    <img src="${esc(p.image_url)}" loading="lazy">
+    <div class="act"><span class="lk" data-like="${p.id}">${liked?'❤️':'🤍'}</span><b>${p.likes.length}</b> likes</div>
+    <div class="cap"><b>${esc(p.profiles?.username)}</b> ${esc(p.caption)}</div>
+    <div class="cms">${p.comments.map(c=>`<div class="cm"><b>${esc(c.profiles?.username)}</b> ${esc(c.body)}</div>`).join('')}</div>
+    <div class="cmf"><input id="ci${p.id}" placeholder="Comment likho..." maxlength="300"><button data-cm="${p.id}">Post</button></div>
+    <div class="dt">${new Date(p.created_at).toLocaleDateString()}</div></div>`;
+}
+
+function redraw(p){
+  const el=$('p'+p.id);
+  if(!el)return;
+  const old=$('ci'+p.id)?$('ci'+p.id).value:'';
+  el.outerHTML=postHTML(p);
+  if(old&&$('ci'+p.id))$('ci'+p.id).value=old;
+}
+
+async function toggleLike(id){
+  const p=feed.find(x=>x.id===id);
+  if(!p)return;
+  const had=p.likes.some(l=>l.user_id===user.id);
+  if(had)p.likes=p.likes.filter(l=>l.user_id!==user.id);
+  else p.likes.push({user_id:user.id});
+  redraw(p);
+  const r=had
+    ?await db.from('likes').delete().eq('post_id',id).eq('user_id',user.id)
+    :await db.from('likes').insert({post_id:id,user_id:user.id});
+  if(r.error){
+    if(had)p.likes.push({user_id:user.id});
+    else p.likes=p.likes.filter(l=>l.user_id!==user.id);
+    redraw(p);
+    alert(r.error.message);
+  }
+}
+
+async function addComment(id){
+  const inp=$('ci'+id);
+  const body=inp.value.trim();
+  if(!body)return;
+  inp.disabled=true;
+  const {data,error}=await db.from('comments')
+    .insert({post_id:id,user_id:user.id,body})
+    .select('id,body,created_at,user_id').single();
+  if(error){inp.disabled=false;alert(error.message);return;}
+  const p=feed.find(x=>x.id===id);
+  p.comments.push({...data,profiles:{username:myName}});
+  inp.value='';
+  redraw(p);
+}
+
 async function homeView(){
   const m=$('main');
   m.innerHTML='<p class="c">Loading...</p>';
+  if(!myName){
+    const {data:me}=await db.from('profiles').select('username').eq('id',user.id).single();
+    myName=me?.username||'me';
+  }
   const {data,error}=await db.from('posts')
-.select('id,image_url,caption,created_at,profiles!posts_user_id_fkey(username)')
+    .select('id,image_url,caption,created_at,profiles!posts_user_id_fkey(username),likes(user_id),comments(id,body,created_at,user_id,profiles!comments_user_id_fkey(username))')
     .order('created_at',{ascending:false}).limit(30);
   if(error){m.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
-  if(!data.length){m.innerHTML='<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>';return;}
-  m.innerHTML=data.map(p=>`<div class="post">
-    <div class="ph"><b>@${esc(p.profiles?.username)}</b></div>
-    <img src="${esc(p.image_url)}" loading="lazy">
-    <div class="cap"><b>${esc(p.profiles?.username)}</b> ${esc(p.caption)}</div>
-    <div class="dt">${new Date(p.created_at).toLocaleDateString()}</div></div>`).join('');
+  feed=data;
+  feed.forEach(p=>p.comments.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
+  if(!feed.length){m.innerHTML='<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>';return;}
+  m.innerHTML=feed.map(postHTML).join('');
+  m.onclick=async e=>{
+    const lk=e.target.closest('[data-like]');
+    if(lk){await toggleLike(+lk.dataset.like);return;}
+    const cm=e.target.closest('[data-cm]');
+    if(cm){await addComment(+cm.dataset.cm);}
+  };
 }
 
 function compress(file){
@@ -154,7 +223,7 @@ async function profileView(){
     $('msg').style.color=error?'#ed4956':'#2e7d32';
     $('msg').textContent=error?error.message:'Saved!';
   };
-  $('out').onclick=()=>db.auth.signOut();
+  $('out').onclick=()=>{myName='';db.auth.signOut();};
 }
 
 db.auth.onAuthStateChange((ev,session)=>{
