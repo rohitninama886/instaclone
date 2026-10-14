@@ -16,15 +16,25 @@ button{width:100%;padding:10px;margin-top:10px;background:#0095f6;color:#fff;bor
 button:disabled{opacity:.5}
 .gray{background:#efefef!important;color:#262626!important}
 a{color:#0095f6;cursor:pointer;font-size:14px}
-.avatar{width:80px;height:80px;border-radius:50%;background:#c7c7c7;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff}
 #msg{color:#ed4956;font-size:13px;margin-top:10px}
 .c{text-align:center;padding:30px 15px;color:#777}
+.avi{border-radius:50%;object-fit:cover;display:block}
+.avl{border-radius:50%;background:#c7c7c7;color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.sbar{display:flex;gap:12px;overflow-x:auto;padding:10px 12px;border-bottom:1px solid #efefef}
+.sc{text-align:center;flex:none;width:70px;cursor:pointer}
+.sl{font-size:12px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ring{padding:3px;border-radius:50%;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);display:inline-flex;position:relative}
+.ring.plain{background:#dbdbdb}
+.ring>*{border:2px solid #fff;border-radius:50%;box-sizing:content-box}
+.ring>.plus{position:absolute;right:-2px;bottom:-2px;background:#0095f6;color:#fff;width:20px;height:20px;font-size:15px;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.hnew{width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#777;background:#fff}
 .post{max-width:470px;margin:0 auto 8px;background:#fff;border-bottom:1px solid #efefef}
 .ph{display:flex;align-items:center;gap:10px;padding:10px 12px}
-.av2{width:36px;height:36px;border-radius:50%;background:#c7c7c7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
 .un{cursor:pointer}
 .fbtn{width:auto;margin:0 0 0 auto;padding:6px 16px;background:#efefef;color:#262626}
 .post img{width:100%;display:block}
+.song{padding:0 12px 6px;font-size:13px;color:#555}
+.post audio{width:100%;height:36px}
 .act{display:flex;gap:14px;padding:10px 12px 4px}
 .act span{cursor:pointer;display:flex}
 .lc,.cap,.cms{padding:2px 12px;font-size:14px}
@@ -33,14 +43,36 @@ a{color:#0095f6;cursor:pointer;font-size:14px}
 .cmf input{margin:0;flex:1}
 .cmf button{width:auto;margin:0;padding:8px 14px}
 .dt{padding:0 12px 10px;font-size:11px;color:#888}
-.stats{display:flex;justify-content:space-around;margin:12px 0;font-size:14px;line-height:1.3}
-.bio{font-size:14px;margin:6px 0}
+.pwrap{max-width:470px;margin:0 auto}
+.phead{display:flex;align-items:center;gap:20px;padding:14px 16px}
+.stats{display:flex;flex:1;justify-content:space-around;text-align:center;font-size:14px;line-height:1.3}
+.pn{padding:0 16px;font-size:14px}
+.bio{margin:4px 0;white-space:pre-wrap}
+.brow{display:flex;gap:8px;padding:10px 16px 0}
+.brow button{margin:0}
+.pad{padding:0 16px}
 .row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dbdbdb;padding:10px;margin:8px 0;cursor:pointer;text-align:left}
 .sm{font-size:12px;color:#777}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:470px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:470px;margin:8px auto 0}
 .grid img{width:100%;aspect-ratio:1;object-fit:cover}
-.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #dbdbdb}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}
+.pick{position:relative;cursor:pointer}
+.pick img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.pick.sel::after{content:'✓';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,149,246,.45);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid #dbdbdb;z-index:5}
 .nav button{width:auto;flex:1;background:none;color:#262626;margin:0;border-radius:0;padding:12px;display:flex;justify-content:center}
+.viewer{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:100;display:flex;align-items:center;justify-content:center}
+.vimg{max-width:100%;max-height:100%;object-fit:contain}
+.vbars{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:4px;z-index:3}
+.vb{flex:1;height:3px;background:rgba(255,255,255,.35);border-radius:2px}
+.vb.on{background:#fff}
+.vhead{position:absolute;top:20px;left:12px;right:12px;display:flex;align-items:center;gap:8px;color:#fff;z-index:3}
+.vx{margin-left:auto;font-size:22px;cursor:pointer;padding:4px 8px}
+.vsong{position:absolute;bottom:40px;left:0;right:0;text-align:center;color:#fff;z-index:3;font-size:14px}
+.vdel{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.55);padding:6px 14px;border-radius:14px;font-size:13px;z-index:4;cursor:pointer}
+.vl,.vr{position:absolute;top:70px;bottom:0;z-index:2}
+.vl{left:0;width:30%}
+.vr{right:0;width:70%}
 </style>
 </head>
 <body>
@@ -53,7 +85,8 @@ const app=document.getElementById('app');
 const $=id=>document.getElementById(id);
 const v=id=>$(id).value.trim();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let mode='login',user=null,tab='home',prevTab='home',viewId=null,myName='',feed=[],myFollowing=new Set();
+let mode='login',user=null,tab='home',prevTab='home',viewId=null,myName='',myAvatar=null;
+let feed=[],myFollowing=new Set(),storyGroups=[],hlCache=[],profCur=null,picked=new Set(),mySt=[],vw=null;
 
 const sv=(inner,fill='none',stroke='currentColor',s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="${fill}" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
 const I={
@@ -64,10 +97,14 @@ const I={
  plus:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>',
  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'
 };
+const av=(url,name,s)=>url
+  ?`<img class="avi" style="width:${s}px;height:${s}px" src="${esc(url)}" alt="">`
+  :`<div class="avl" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.45)}px">${esc((name||'?')[0].toUpperCase())}</div>`;
 const ago=t=>{const s=(Date.now()-new Date(t))/1000;
   if(s<60)return 'abhi';if(s<3600)return Math.floor(s/60)+' min pehle';
   if(s<86400)return Math.floor(s/3600)+' ghante pehle';return Math.floor(s/86400)+' din pehle';};
 
+/* ---------- auth ---------- */
 function authView(){
   const su=mode==='signup';
   app.innerHTML=`<div class="box"><h1>InstaClone</h1>
@@ -94,6 +131,7 @@ function authView(){
   };
 }
 
+/* ---------- shell ---------- */
 function shell(){
   app.innerHTML=`<div class="top"><span class="tl" id="plus">${sv(I.plus)}</span>InstaClone</div><div id="main"></div>
   <div class="nav">
@@ -106,9 +144,12 @@ function shell(){
   $('main').onclick=onMain;
 }
 function show(){
+  closeViewer();
   if(tab==='home')homeView();
   else if(tab==='search')searchView();
-  else if(tab==='new')newView();
+  else if(tab==='new')composer('post');
+  else if(tab==='newstory')composer('story');
+  else if(tab==='newhl')newHlView();
   else if(tab==='user')profileView(viewId);
   else profileView(user.id);
 }
@@ -120,35 +161,89 @@ function openUser(id){
 
 async function onMain(e){
   const t=e.target;
-  const fl=t.closest('[data-follow]');
-  if(fl){await toggleFollow(fl.dataset.follow);return;}
-  const lk=t.closest('[data-like]');
-  if(lk){await toggleLike(+lk.dataset.like);return;}
-  const cm=t.closest('[data-cm]');
-  if(cm){await addComment(+cm.dataset.cm);return;}
-  const fc=t.closest('[data-focus]');
-  if(fc){const i=$('ci'+fc.dataset.focus);if(i)i.focus();return;}
-  if(t.closest('[data-back]')){tab=prevTab;show();return;}
-  const us=t.closest('[data-user]');
-  if(us){openUser(us.dataset.user);}
+  const q=s=>t.closest(s);
+  let x;
+  if(x=q('[data-follow]')){await toggleFollow(x.dataset.follow);return;}
+  if(x=q('[data-like]')){await toggleLike(+x.dataset.like);return;}
+  if(x=q('[data-cm]')){await addComment(+x.dataset.cm);return;}
+  if(x=q('[data-focus]')){const i=$('ci'+x.dataset.focus);if(i)i.focus();return;}
+  if(x=q('[data-story]')){
+    const g=storyGroups.find(g=>g.id===x.dataset.story);
+    if(g)openViewer(g.items,g.name,g.avatar,null,false);
+    return;
+  }
+  if(q('[data-addstory]')){tab='newstory';show();return;}
+  if(x=q('[data-hl]')){
+    const h=hlCache[+x.dataset.hl];
+    if(h&&h.items.length)openViewer(h.items,profCur.username,profCur.avatar_url,h.id,profCur.id===user.id);
+    return;
+  }
+  if(q('[data-newhl]')){tab='newhl';show();return;}
+  if(x=q('[data-pick]')){
+    const id=+x.dataset.pick;
+    if(picked.has(id))picked.delete(id);else picked.add(id);
+    x.classList.toggle('sel');
+    return;
+  }
+  if(q('[data-edit]')){editView();return;}
+  if(q('[data-share]')){shareLink();return;}
+  if(q('[data-back]')){tab=prevTab;show();return;}
+  if(x=q('[data-user]')){openUser(x.dataset.user);}
 }
 
 async function loadMe(){
-  const {data:me}=await db.from('profiles').select('username').eq('id',user.id).single();
+  const {data:me}=await db.from('profiles').select('username,avatar_url').eq('id',user.id).single();
   myName=me?.username||'me';
+  myAvatar=me?.avatar_url||null;
   const {data:f}=await db.from('follows').select('following_id').eq('follower_id',user.id);
   myFollowing=new Set((f||[]).map(x=>x.following_id));
 }
 
+/* ---------- upload helpers ---------- */
+async function upload(file,folder,ext,type){
+  const path=`${folder}/${user.id}/${Date.now()}.${ext}`;
+  const r=await db.storage.from('posts').upload(path,file,{contentType:type});
+  if(r.error)throw r.error;
+  return db.storage.from('posts').getPublicUrl(path).data.publicUrl;
+}
+function compress(file,max=1080){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const s=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      c.toBlob(b=>b?res(b):rej(new Error('Photo process nahi hui')),'image/jpeg',0.8);
+    };
+    img.onerror=()=>rej(new Error('Photo load nahi hui'));
+    img.src=URL.createObjectURL(file);
+  });
+}
+async function readSong(){
+  const title=v('song');
+  const f=$('songf').files[0];
+  let url=null;
+  if(f){
+    if(f.size>8*1024*1024)throw new Error('Song file 8 MB se chhoti honi chahiye');
+    const ext=((f.name.split('.').pop()||'mp3').toLowerCase().replace(/[^a-z0-9]/g,''))||'mp3';
+    url=await upload(f,'songs',ext,f.type||'audio/mpeg');
+  }
+  return {song_title:title||null,song_url:url};
+}
+
+/* ---------- feed ---------- */
 function postHTML(p){
   const liked=p.likes.some(l=>l.user_id===user.id);
-  const un=p.profiles?.username;
+  const un=p.profiles?.username,ua=p.profiles?.avatar_url;
   const showF=p.user_id!==user.id&&!myFollowing.has(p.user_id);
   return `<div class="post" id="p${p.id}">
-    <div class="ph"><div class="av2 un" data-user="${esc(p.user_id)}">${esc((un||'?')[0].toUpperCase())}</div>
+    <div class="ph"><span class="un" data-user="${esc(p.user_id)}">${av(ua,un,36)}</span>
     <b class="un" data-user="${esc(p.user_id)}">${esc(un)}</b>
     ${showF?`<button class="fbtn" data-follow="${esc(p.user_id)}">Follow</button>`:''}</div>
+    ${p.song_title?`<div class="song">🎵 ${esc(p.song_title)}</div>`:''}
     <img src="${esc(p.image_url)}" loading="lazy">
+    ${p.song_url?`<audio controls preload="none" src="${esc(p.song_url)}"></audio>`:''}
     <div class="act"><span data-like="${p.id}">${sv(I.heart,liked?'#ed4956':'none',liked?'#ed4956':'currentColor')}</span><span data-focus="${p.id}">${sv(I.cmt)}</span></div>
     <div class="lc"><b>${p.likes.length} likes</b></div>
     <div class="cap"><b class="un" data-user="${esc(p.user_id)}">${esc(un)}</b> ${esc(p.caption)}</div>
@@ -156,7 +251,6 @@ function postHTML(p){
     <div class="cmf"><input id="ci${p.id}" placeholder="Comment likho..." maxlength="300"><button data-cm="${p.id}">Post</button></div>
     <div class="dt">${ago(p.created_at)}</div></div>`;
 }
-
 function redraw(p){
   const el=$('p'+p.id);
   if(!el)return;
@@ -166,7 +260,6 @@ function redraw(p){
   const n=$('ci'+p.id);
   if(old&&n)n.value=old;
 }
-
 async function toggleLike(id){
   const p=feed.find(x=>x.id===id);
   if(!p)return;
@@ -184,7 +277,6 @@ async function toggleLike(id){
     alert(r.error.message);
   }
 }
-
 async function addComment(id){
   const inp=$('ci'+id);
   const body=inp.value.trim();
@@ -199,7 +291,6 @@ async function addComment(id){
   inp.value='';
   redraw(p);
 }
-
 async function toggleFollow(id){
   const had=myFollowing.has(id);
   const r=had
@@ -211,19 +302,39 @@ async function toggleFollow(id){
   else feed.filter(p=>p.user_id===id).forEach(redraw);
 }
 
+async function loadStories(){
+  const since=new Date(Date.now()-864e5).toISOString();
+  const {data}=await db.from('stories')
+    .select('id,user_id,image_url,song_title,song_url,created_at,profiles!stories_user_id_fkey(username,avatar_url)')
+    .gte('created_at',since).order('created_at',{ascending:true});
+  const map=new Map();
+  (data||[]).forEach(s=>{
+    if(!map.has(s.user_id))map.set(s.user_id,{id:s.user_id,name:s.profiles?.username,avatar:s.profiles?.avatar_url,items:[]});
+    map.get(s.user_id).items.push(s);
+  });
+  storyGroups=[...map.values()].sort((a,b)=>(b.id===user.id)-(a.id===user.id));
+  return `<div class="sbar">
+    <div class="sc" data-addstory="1"><div class="ring plain">${av(myAvatar,myName,56)}<span class="plus">+</span></div><div class="sl">Your story</div></div>
+    ${storyGroups.map(g=>`<div class="sc" data-story="${esc(g.id)}"><div class="ring">${av(g.avatar,g.name,56)}</div><div class="sl">${esc(g.id===user.id?'You':g.name)}</div></div>`).join('')}
+  </div>`;
+}
+
 async function homeView(){
   const m=$('main');
   m.innerHTML='<p class="c">Loading...</p>';
-  const {data,error}=await db.from('posts')
-    .select('id,user_id,image_url,caption,created_at,profiles!posts_user_id_fkey(username),likes(user_id),comments(id,body,created_at,user_id,profiles!comments_user_id_fkey(username))')
-    .order('created_at',{ascending:false}).limit(30);
-  if(error){m.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
-  feed=data;
+  const [fd,sb]=await Promise.all([
+    db.from('posts')
+      .select('id,user_id,image_url,caption,song_title,song_url,created_at,profiles!posts_user_id_fkey(username,avatar_url),likes(user_id),comments(id,body,created_at,user_id,profiles!comments_user_id_fkey(username))')
+      .order('created_at',{ascending:false}).limit(30),
+    loadStories()
+  ]);
+  if(fd.error){m.innerHTML=sb+`<p class="c" style="color:#ed4956">${esc(fd.error.message)}</p>`;return;}
+  feed=fd.data;
   feed.forEach(p=>p.comments.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
-  if(!feed.length){m.innerHTML='<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>';return;}
-  m.innerHTML=feed.map(postHTML).join('');
+  m.innerHTML=sb+(feed.length?feed.map(postHTML).join(''):'<p class="c">Abhi koi post nahi. ➕ dabake pehla post daalo!</p>');
 }
 
+/* ---------- search ---------- */
 function searchView(){
   $('main').innerHTML=`<div style="padding:10px"><input id="q" placeholder="Username search karo..."></div><div id="res" style="padding:0 10px"></div>`;
   let t;
@@ -233,37 +344,27 @@ function searchView(){
 async function runSearch(){
   if(!$('q'))return;
   const q=$('q').value.trim().replace(/[%_,()]/g,'');
-  let qb=db.from('profiles').select('id,username,full_name').limit(20);
+  let qb=db.from('profiles').select('id,username,full_name,avatar_url').limit(20);
   qb=q?qb.ilike('username','%'+q+'%'):qb.order('created_at',{ascending:false});
   const {data,error}=await qb;
   const res=$('res');
   if(!res)return;
   if(error){res.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
   if(!data.length){res.innerHTML='<p class="c">Koi nahi mila</p>';return;}
-  res.innerHTML=data.map(u=>`<div class="row" data-user="${esc(u.id)}"><div class="av2">${esc((u.username||'?')[0].toUpperCase())}</div><div><b>${esc(u.username)}</b><div class="sm">${esc(u.full_name)}</div></div></div>`).join('');
+  res.innerHTML=data.map(u=>`<div class="row" data-user="${esc(u.id)}">${av(u.avatar_url,u.username,44)}<div><b>${esc(u.username)}</b><div class="sm">${esc(u.full_name)}</div></div></div>`).join('');
 }
 
-function compress(file){
-  return new Promise((res,rej)=>{
-    const img=new Image();
-    img.onload=()=>{
-      const s=Math.min(1,1080/Math.max(img.width,img.height));
-      const c=document.createElement('canvas');
-      c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
-      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-      c.toBlob(b=>b?res(b):rej(new Error('Photo process nahi hui')),'image/jpeg',0.8);
-    };
-    img.onerror=()=>rej(new Error('Photo load nahi hui'));
-    img.src=URL.createObjectURL(file);
-  });
-}
-
-function newView(){
-  $('main').innerHTML=`<div class="box"><h3>New post</h3>
+/* ---------- new post / story ---------- */
+function composer(kind){
+  const isP=kind==='post';
+  $('main').innerHTML=`<div class="box"><h3>${isP?'New post':'New story'}</h3>
   <input id="file" type="file" accept="image/*">
   <img id="pv" style="display:none;width:100%;margin-top:8px">
-  <textarea id="cap" rows="3" placeholder="Caption likho..."></textarea>
-  <button id="share">Share</button><div id="msg"></div></div>`;
+  ${isP?'<textarea id="cap" rows="3" placeholder="Caption likho..."></textarea>':''}
+  <input id="song" placeholder="🎵 Song ka naam (optional)" maxlength="80">
+  <div class="sm" style="text-align:left;margin-top:6px">Song file (mp3, optional, max 8 MB)</div>
+  <input id="songf" type="file" accept="audio/*">
+  <button id="share">${isP?'Share':'Share story'}</button><div id="msg"></div></div>`;
   $('file').onchange=e=>{
     const f=e.target.files[0];
     if(f){$('pv').src=URL.createObjectURL(f);$('pv').style.display='block';}
@@ -274,12 +375,11 @@ function newView(){
     $('share').disabled=true;
     $('msg').style.color='#555';$('msg').textContent='Upload ho raha hai...';
     try{
-      const blob=await compress(f);
-      const path=`${user.id}/${Date.now()}.jpg`;
-      const up=await db.storage.from('posts').upload(path,blob,{contentType:'image/jpeg'});
-      if(up.error)throw up.error;
-      const url=db.storage.from('posts').getPublicUrl(path).data.publicUrl;
-      const ins=await db.from('posts').insert({user_id:user.id,image_url:url,caption:v('cap')});
+      const url=await upload(await compress(f),isP?'posts':'stories','jpg','image/jpeg');
+      const sg=await readSong();
+      const row={user_id:user.id,image_url:url,...sg};
+      if(isP)row.caption=v('cap');
+      const ins=await db.from(isP?'posts':'stories').insert(row);
       if(ins.error)throw ins.error;
       tab='home';show();
     }catch(e){
@@ -289,36 +389,151 @@ function newView(){
   };
 }
 
+/* ---------- story viewer ---------- */
+function openViewer(items,name,avatar,hid,own){
+  closeViewer();
+  vw={items,i:0,t:null,a:null,hid,own,name,avatar};
+  const d=document.createElement('div');
+  d.id='viewer';d.className='viewer';
+  d.onclick=e=>{
+    const t=e.target;
+    if(t.closest('[data-vclose]'))closeViewer();
+    else if(t.closest('[data-vdel]'))delHighlight();
+    else if(t.closest('[data-vnext]'))vnext();
+    else if(t.closest('[data-vprev]'))vprev();
+  };
+  document.body.appendChild(d);
+  drawViewer();
+}
+function drawViewer(){
+  const d=$('viewer');
+  if(!d||!vw)return;
+  clearTimeout(vw.t);
+  if(vw.a){vw.a.pause();vw.a=null;}
+  const it=vw.items[vw.i];
+  d.innerHTML=`<div class="vbars">${vw.items.map((_,k)=>`<div class="vb ${k<=vw.i?'on':''}"></div>`).join('')}</div>
+  <div class="vhead">${av(vw.avatar,vw.name,32)}<b>${esc(vw.name)}</b><span class="vx" data-vclose="1">✕</span></div>
+  <img class="vimg" src="${esc(it.image_url)}" alt="">
+  ${it.song_title?`<div class="vsong">🎵 ${esc(it.song_title)}</div>`:''}
+  ${vw.hid&&vw.own?'<div class="vdel" data-vdel="1">Delete highlight</div>':''}
+  <div class="vl" data-vprev="1"></div><div class="vr" data-vnext="1"></div>`;
+  if(it.song_url){vw.a=new Audio(it.song_url);vw.a.play().catch(()=>{});}
+  vw.t=setTimeout(vnext,6000);
+}
+function vnext(){
+  if(!vw)return;
+  if(vw.i<vw.items.length-1){vw.i++;drawViewer();}else closeViewer();
+}
+function vprev(){if(vw&&vw.i>0){vw.i--;drawViewer();}}
+function closeViewer(){
+  if(vw){clearTimeout(vw.t);if(vw.a)vw.a.pause();vw=null;}
+  const d=$('viewer');
+  if(d)d.remove();
+}
+async function delHighlight(){
+  if(!vw||!vw.hid)return;
+  if(!confirm('Ye highlight delete karein?'))return;
+  const id=vw.hid;
+  closeViewer();
+  const {error}=await db.from('highlights').delete().eq('id',id).eq('user_id',user.id);
+  if(error)alert(error.message);
+  else profileView(user.id);
+}
+
+/* ---------- new highlight ---------- */
+async function newHlView(){
+  const m=$('main');
+  m.innerHTML='<p class="c">Loading...</p>';
+  picked=new Set();
+  const {data,error}=await db.from('stories').select('id,image_url,song_title,song_url,created_at')
+    .eq('user_id',user.id).order('created_at',{ascending:false});
+  if(error){m.innerHTML=`<p class="c" style="color:#ed4956">${esc(error.message)}</p>`;return;}
+  mySt=data;
+  if(!mySt.length){m.innerHTML='<p class="c">Pehle koi story daalo (home par "Your story"), phir highlight banao.</p>';return;}
+  m.innerHTML=`<div class="box"><h3>New highlight</h3>
+  <input id="ht" placeholder="Highlight ka naam" maxlength="30">
+  <div class="sm" style="text-align:left;margin-top:8px">Apni stories chuno:</div>
+  <div class="picks">${mySt.map(s=>`<div class="pick" data-pick="${s.id}"><img src="${esc(s.image_url)}"></div>`).join('')}</div>
+  <button id="mk">Create</button><div id="msg"></div></div>`;
+  $('mk').onclick=async()=>{
+    const title=v('ht');
+    if(!title){$('msg').textContent='Naam daalo';return;}
+    if(!picked.size){$('msg').textContent='Kam se kam ek story chuno';return;}
+    $('mk').disabled=true;
+    const {data:h,error:e1}=await db.from('highlights').insert({user_id:user.id,title}).select('id').single();
+    if(e1){$('msg').textContent=e1.message;$('mk').disabled=false;return;}
+    const rows=mySt.filter(s=>picked.has(s.id)).map(s=>({highlight_id:h.id,image_url:s.image_url,song_title:s.song_title,song_url:s.song_url,created_at:s.created_at}));
+    const r=await db.from('highlight_items').insert(rows);
+    if(r.error){$('msg').textContent=r.error.message;$('mk').disabled=false;return;}
+    tab='me';show();
+  };
+}
+
+/* ---------- profile ---------- */
+async function shareLink(){
+  const url=location.origin+location.pathname;
+  try{
+    if(navigator.share){await navigator.share({title:'InstaClone',url});return;}
+    await navigator.clipboard.writeText(url);
+    alert('Link copy ho gaya');
+  }catch(e){}
+}
+function editView(){
+  const p=profCur;
+  $('editbox').innerHTML=`<div class="pad"><input id="en" placeholder="Naam" value="${esc(p.full_name)}">
+  <textarea id="eb" rows="3" placeholder="Bio">${esc(p.bio)}</textarea>
+  <div class="sm">Profile photo badlo (optional)</div>
+  <input id="ef" type="file" accept="image/*">
+  <button id="esave">Save</button><div id="msg"></div></div>`;
+  $('esave').onclick=async()=>{
+    $('esave').disabled=true;
+    try{
+      const upd={full_name:v('en'),bio:v('eb')};
+      const f=$('ef').files[0];
+      if(f)upd.avatar_url=await upload(await compress(f,400),'avatars','jpg','image/jpeg');
+      const {error}=await db.from('profiles').update(upd).eq('id',user.id);
+      if(error)throw error;
+      if(upd.avatar_url)myAvatar=upd.avatar_url;
+      myName=myName;
+      profileView(user.id);
+    }catch(e){
+      $('msg').textContent=e.message;
+      $('esave').disabled=false;
+    }
+  };
+}
 async function profileView(id){
   const own=id===user.id;
   const m=$('main');
   m.innerHTML='<p class="c">Loading...</p>';
-  const [pr,po,fr,fg]=await Promise.all([
+  const [pr,po,fr,fg,hl]=await Promise.all([
     db.from('profiles').select('*').eq('id',id).single(),
     db.from('posts').select('id,image_url').eq('user_id',id).order('created_at',{ascending:false}),
     db.from('follows').select('*',{count:'exact',head:true}).eq('following_id',id),
-    db.from('follows').select('*',{count:'exact',head:true}).eq('follower_id',id)
+    db.from('follows').select('*',{count:'exact',head:true}).eq('follower_id',id),
+    db.from('highlights').select('id,title,highlight_items(image_url,song_title,song_url,created_at)').eq('user_id',id).order('created_at',{ascending:true})
   ]);
   const p=pr.data;
   if(!p){m.innerHTML='<p class="c">Profile nahi mila</p>';return;}
+  profCur=p;
+  hlCache=(hl.data||[]).map(h=>({...h,items:(h.highlight_items||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))}));
   const isF=myFollowing.has(id);
-  m.innerHTML=`${own?'':'<div style="padding:10px"><a data-back="1">← Back</a></div>'}
-  <div class="box"><div class="avatar">${esc((p.username||'?')[0].toUpperCase())}</div>
-  <h3>@${esc(p.username)}</h3><p>${esc(p.full_name)}</p>
-  <div class="stats"><div><b>${po.data?.length||0}</b><br>posts</div><div><b>${fr.count||0}</b><br>followers</div><div><b>${fg.count||0}</b><br>following</div></div>
+  m.innerHTML=`<div class="pwrap">
+  ${own?'':'<div style="padding:10px 16px"><a data-back="1">← Back</a></div>'}
+  <div class="phead">${av(p.avatar_url,p.username,86)}
+    <div class="stats"><div><b>${po.data?.length||0}</b><br>posts</div><div><b>${fr.count||0}</b><br>followers</div><div><b>${fg.count||0}</b><br>following</div></div></div>
+  <div class="pn"><b>${esc(p.full_name)}</b><div class="sm">@${esc(p.username)}</div><div class="bio">${esc(p.bio)}</div></div>
   ${own
-   ?`<textarea id="bio" rows="3" placeholder="Bio">${esc(p.bio)}</textarea><button id="save">Save bio</button><button id="out" class="gray">Log out</button>`
-   :`<p class="bio">${esc(p.bio)}</p><button data-follow="${esc(id)}" class="${isF?'gray':''}">${isF?'Following':'Follow'}</button>`}
-  <div id="msg"></div></div>
-  <div class="grid">${(po.data||[]).map(x=>`<img src="${esc(x.image_url)}">`).join('')}</div>`;
-  if(own){
-    $('save').onclick=async()=>{
-      const {error}=await db.from('profiles').update({bio:v('bio')}).eq('id',user.id);
-      $('msg').style.color=error?'#ed4956':'#2e7d32';
-      $('msg').textContent=error?error.message:'Saved!';
-    };
-    $('out').onclick=()=>{myName='';myFollowing=new Set();db.auth.signOut();};
-  }
+    ?`<div class="brow"><button class="gray" data-edit="1">Edit profile</button><button class="gray" data-share="1">Share profile</button></div>
+      <div id="editbox"></div>
+      <div class="pad"><button id="out" class="gray">Log out</button></div>`
+    :`<div class="brow"><button data-follow="${esc(id)}" class="${isF?'gray':''}">${isF?'Following':'Follow'}</button></div>`}
+  <div class="sbar" style="margin-top:10px;border-bottom:0">
+    ${own?'<div class="sc" data-newhl="1"><div class="ring plain"><div class="hnew">+</div></div><div class="sl">New</div></div>':''}
+    ${hlCache.map((h,k)=>`<div class="sc" data-hl="${k}"><div class="ring plain">${av(h.items[0]?.image_url,h.title,56)}</div><div class="sl">${esc(h.title)}</div></div>`).join('')}
+  </div>
+  <div class="grid">${(po.data||[]).map(x=>`<img src="${esc(x.image_url)}">`).join('')}</div></div>`;
+  if(own)$('out').onclick=()=>{myName='';myAvatar=null;myFollowing=new Set();db.auth.signOut();};
 }
 
 db.auth.onAuthStateChange((ev,session)=>{
@@ -326,7 +541,7 @@ db.auth.onAuthStateChange((ev,session)=>{
   if(ev==='SIGNED_IN'&&user&&session&&session.user.id===user.id)return;
   setTimeout(async()=>{
     user=session?session.user:null;
-    if(user){await loadMe();tab='home';shell();show();}else authView();
+    if(user){await loadMe();tab='home';shell();show();}else{closeViewer();authView();}
   },0);
 });
 </script>
